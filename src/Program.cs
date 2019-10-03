@@ -12,13 +12,8 @@ namespace Reversi
             var view = new View();
             var ope = new Operator(board);
 
-            board[3,3] = State.White;
-            board[4,4] = State.White;
-            board[3,4] = State.Black;
-            board[4,3] = State.Black;
-
-            board[0,0] = State.Cursor;
-
+            ope.Init();
+            
             view.Show(board);
 
             ConsoleKeyInfo key;
@@ -37,7 +32,7 @@ namespace Reversi
                     ope.CoursorDown();
                 }
                 if(key.Key == ConsoleKey.Spacebar){
-                    ope.Push();
+                    ope.Put();
                 }
                 view.Show(board);
             }

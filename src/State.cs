@@ -1,9 +1,9 @@
 namespace Reversi
 {
     public enum State{
-        Empty = 0,
-        Black = 1,
-        White = 2,
-        Cursor = 4
+        Empty = 1,
+        Black = 2,
+        White = 4,
+        Cursor = 8
     }
 }

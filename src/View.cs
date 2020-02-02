@@ -3,11 +3,19 @@ using System;
 namespace Reversi
 {
     public class View{
-        public View()
+        private readonly object _sync = new object();
+        private readonly Board _board;
+
+        public View(Board board)
         {
+            _board = board;
         }
 
-        public void Show(Board board)
+        public void Show(){
+            lock(_sync)
+                ShowInner(_board);
+        }
+        private void ShowInner(Board board)
         {
             Console.CursorLeft = 0;
             Console.CursorTop = 0;

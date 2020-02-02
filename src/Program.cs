@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Reversi
 {
@@ -9,33 +10,44 @@ namespace Reversi
             Console.CursorVisible = false;
             Console.Clear();
             var board = new Board(8,8);
-            var view = new View();
+            var view = new View(board);
             var ope = new Operator(board);
+            var currentPlayer = new CurrentPlayer(view);
 
             ope.Init();
             
-            view.Show(board);
+            view.Show();
 
-            ConsoleKeyInfo key;
-            while((key = Console.ReadKey()).Key != ConsoleKey.Escape){
+            currentPlayer.Start();
+            
+            while(true){
+                if(currentPlayer.TryGetKeyOnes(out var key)){
+                    if(key == ConsoleKey.Escape){
+                        break;
+                    }
+                    else if(key == ConsoleKey.RightArrow){
+                        ope.CoursorRight();
+                    }
+                    else if(key == ConsoleKey.LeftArrow){
+                        ope.CoursorLeft();
+                    }
+                    else if(key == ConsoleKey.UpArrow){
+                        ope.CoursorUp();
+                    }
+                    else if(key == ConsoleKey.DownArrow){
+                        ope.CoursorDown();
+                    }
+                    else if(key == ConsoleKey.Spacebar){
+                        ope.Put();
+                    }
+                }
                 
-                if(key.Key == ConsoleKey.RightArrow){
-                    ope.CoursorRight();
-                }
-                if(key.Key == ConsoleKey.LeftArrow){
-                    ope.CoursorLeft();
-                }
-                if(key.Key == ConsoleKey.UpArrow){
-                    ope.CoursorUp();
-                }
-                if(key.Key == ConsoleKey.DownArrow){
-                    ope.CoursorDown();
-                }
-                if(key.Key == ConsoleKey.Spacebar){
-                    ope.Put();
-                }
-                view.Show(board);
+                view.Show();
+
+                Thread.Sleep(50);
             }
+
+            currentPlayer.Dispose();
         }
     }
 }

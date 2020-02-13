@@ -3,54 +3,30 @@ using System.Threading;
 
 namespace Reversi
 {
-    public class CurrentPlayer:IDisposable
+    public interface IPlayer
     {
-        private readonly View _view;
-        private readonly Thread _thread;
-        public CurrentPlayer(View view)
+        (int x, int y) Cursor { get; }
+        (int x, int y) MoveCursor(int x, int y);
+    }
+
+    public class CurrentPlayer : IPlayer
+    {
+        public CurrentPlayer(Board board){
+            _soardSize = (board.Width,board.Height);
+        }
+
+        private readonly (int width, int height) _soardSize;
+
+        public (int x, int y) Cursor { get; private set; }
+
+        public (int x, int y) MoveCursor(int x, int y)
         {
-            this._view = view;
+            var nowCursor = Cursor;
 
-            _thread = new Thread(ThreadFunc);
-        }
+            var nextX = Math.Max(0, Math.Min(_soardSize.width - 1, nowCursor.x + x));
+            var nextY = Math.Max(0, Math.Min(_soardSize.height - 1, nowCursor.y + y));
 
-        private ConsoleKey _key;
-        public ConsoleKey Key{get=>_key;}
-
-        public bool TryGetKeyOnes(out ConsoleKey key){
-            if(_onKey){
-                key = _key;
-                _onKey = false;
-                return true;
-            }
-            key = default;
-            return false;
-        }
-
-        private bool _onKey = false;
-
-        private void ThreadFunc(){
-            while(true){
-                var keyInfo = Console.ReadKey(true);
-                // Key 入力後に表示をクリアする
-                _view.Show();
-                _key =  keyInfo.Key;
-                _onKey = true;
-                if(keyInfo.Key == ConsoleKey.Escape)
-                    break;
-
-                Thread.Sleep(100);
-            }
-        }
-
-        public void Dispose()
-        {
-            if(_thread.IsAlive)
-                _thread.Abort();
-        }
-
-        public void Start(){
-            _thread.Start();
+            return Cursor = (nextX, nextY);
         }
     }
 }

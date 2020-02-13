@@ -2,13 +2,19 @@ using System;
 
 namespace Reversi
 {
-    public class Operator{
+    public class BoardOperator{
         readonly Board _board;
-        private State _currentState;
-        public Operator(Board board){
+
+        private readonly IPlayer _selfPlayer;
+        private readonly IPlayer _rivalPlayer;
+        public BoardOperator(Board board, IPlayer selfPlayer, IPlayer rivalPlayer){
             _board = board;
-            _currentState = State.Black;
+            _selfPlayer = selfPlayer;
+            _rivalPlayer = rivalPlayer;
+            CurrentPlayer = _selfPlayer;
         }
+
+        public IPlayer CurrentPlayer{get; private set;}
 
         private int _coursorX = -1;
         private int _coursorY = -1;
@@ -32,69 +38,11 @@ namespace Reversi
             }
         }
 
-        public void CoursorUp()
-        {
-            if(_coursorX == -1 || _coursorY == -1){
-                _coursorX = 0;
-                _coursorY = 0;
-            }
-            else
-            {
-                _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] & (~State.Cursor);    
-
-                _coursorY = Math.Max(0,_coursorY - 1);
-            }
-            _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] | State.Cursor;
-        }
-
-        public void CoursorDown()
-        {
-            if(_coursorX == -1 || _coursorY == -1){
-                _coursorX = 0;
-                _coursorY = 0;
-            }
-            else
-            {
-                _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] & (~State.Cursor);    
-
-                _coursorY = Math.Min(_board.Height - 1,_coursorY + 1);
-            }
-            _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] | State.Cursor;
-        }
-
-        public void CoursorRight()
-        {
-            if(_coursorX == -1 || _coursorY == -1){
-                _coursorX = 0;
-                _coursorY = 0;
-            }
-            else
-            {
-                _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] & (~State.Cursor);    
-
-                _coursorX = Math.Min(_board.Width - 1,_coursorX + 1);
-            }
-            _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] | State.Cursor;
-        }
-
-        public void CoursorLeft()
-        {
-            if(_coursorX == -1 || _coursorY == -1){
-                _coursorX = 0;
-                _coursorY = 0;
-            }
-            else
-            {
-                _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] & (~State.Cursor);    
-
-                _coursorX = Math.Max(0,_coursorX - 1);
-            }
-            _board[_coursorX,_coursorY] = _board[_coursorX,_coursorY] | State.Cursor;
-        }
+        
 
         public void Put()
         {
-            var opponent = (State.White | State.Black) & ((State.White | State.Black) ^ _currentState);
+            var opponent = CurrentPlayer == _selfPlayer ? State.Black : State.White;
             
             var width = _board.Width;
             var height = _board.Height;
@@ -151,28 +99,28 @@ namespace Reversi
             
             if(leftX != -1){
                 for(int x = leftX; x < _coursorX; x++){
-                    _board[x,_coursorY] = (_board[x,_coursorY] & State.Cursor) | _currentState;
+                    _board[x,_coursorY] = opponent;
                 }   
             }
             if(rightX != -1){
                 for(int x = rightX; _coursorX < x; x--){
-                    _board[x,_coursorY] = (_board[x,_coursorY] & State.Cursor) | _currentState;
+                    _board[x,_coursorY] = opponent;
                 }   
             }
             if(topY != -1){
                 for(int y = topY; y < _coursorY; y++){
-                    _board[_coursorX,y] = (_board[_coursorX,y] & State.Cursor) | _currentState;
+                    _board[_coursorX,y] = opponent;
                 }   
             }
             if(bottomY != -1){
                 for(int y = bottomY; _coursorY < y; y--){
-                    _board[_coursorX,y] = (_board[_coursorX,y] & State.Cursor) | _currentState;
+                    _board[_coursorX,y] = opponent;
                 }   
             }
             
-            _board[_coursorX,_coursorY] = (_board[_coursorX,_coursorY] & State.Cursor) | _currentState;
+            _board[_coursorX,_coursorY] = opponent;
 
-            _currentState = opponent;
+            CurrentPlayer = CurrentPlayer == _selfPlayer ? _rivalPlayer : _selfPlayer;
         }
     }
 }

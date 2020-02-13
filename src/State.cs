@@ -4,6 +4,5 @@ namespace Reversi
         Empty = 1,
         Black = 2,
         White = 4,
-        Cursor = 8
     }
 }

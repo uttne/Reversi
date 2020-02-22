@@ -117,8 +117,8 @@ namespace Reversi
                     return 0;
                 return v.Length;
             }
-            var widthMax = Console.WindowWidth;
-            var heightMax = Console.WindowHeight;
+            var widthMax = Console.WindowWidth - 1;
+            var heightMax = Console.WindowHeight - 1;
             var emptyString = "                                                                                                                                                                                                               ";
 
             var screenData = _screenManager.ReadOnlyScreen.ToArray();
@@ -230,7 +230,7 @@ namespace Reversi
                 for (int x = 0; x < width; ++x)
                 {
                     var state = board[x, y];
-                    
+
                     var currentPlayer = scean.Current;
                     var backColor = Console.BackgroundColor;
                     if (currentPlayer.player.Cursor.x == x && currentPlayer.player.Cursor.y == y)

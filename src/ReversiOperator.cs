@@ -96,8 +96,6 @@ namespace Reversi
                 return;
             }
 
-            _board[x, y] = state;
-
             if (state == State.Empty)
             {
                 return;
@@ -135,9 +133,10 @@ namespace Reversi
                     }
                     else if (st == state)
                     {
-                        for(int j = 1;j < rivalCount;j++){
-                            var (reverseX,reverseY) = func(j);
-                            _board[reverseX,reverseY] = state;
+                        for (int j = 0; j <= rivalCount; j++)
+                        {
+                            var (reverseX, reverseY) = func(j);
+                            _board[reverseX, reverseY] = state;
                         }
                         break;
                     }

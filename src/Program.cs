@@ -9,7 +9,7 @@ namespace Reversi
         {
             Console.CursorVisible = false;
             Console.Clear();
-            var board = new Board(8, 8);
+            var board = new Board(6, 6);
 
             var selfPlayer = new CurrentPlayer(board);
             var rivalPlayer = new CurrentPlayer(board);

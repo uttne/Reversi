@@ -87,6 +87,36 @@ namespace Reversi
             return false;
         }
 
+        public bool CheckPut(State state)
+        {
+            var width = _board.Width;
+            var height = _board.Height;
+            for (var x = 0; x < width; ++x)
+            {
+                for (var y = 0; y < height; ++y)
+                {
+                    if (CheckPut(state, x, y))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public int GetPieceCount(State state)
+        {
+            int count = 0;
+            var width = _board.Width;
+            var height = _board.Height;
+            for (var x = 0; x < width; ++x)
+            {
+                for (var y = 0; y < height; ++y)
+                {
+                    if (_board[x, y] == state)
+                        ++count;
+                }
+            }
+            return count;
+        }
         public void Put(State state, int x, int y)
         {
             var width = _board.Width;
@@ -128,6 +158,10 @@ namespace Reversi
                         rivalCount++;
                     }
                     if (rivalCount == 0)
+                    {
+                        break;
+                    }
+                    else if (st == State.Empty)
                     {
                         break;
                     }

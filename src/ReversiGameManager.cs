@@ -63,6 +63,9 @@ namespace Reversi
         private readonly ReversiOperator _reversiOperator;
         private IPlayer _current;
 
+        public State? Winner { get; private set; }
+        public bool IsEnd { get; private set; }
+
         public (State state, IPlayer player) Current => (_self == _current ? State.Black : State.White, _current);
 
         public BattleScean(IPlayer self, IPlayer rival, ReversiOperator reversiOperator)
@@ -71,6 +74,10 @@ namespace Reversi
             this._rival = rival;
             this._reversiOperator = reversiOperator;
             _current = self;
+
+            _self.Initialize();
+            _rival.Initialize();
+            _reversiOperator.Initialize();
         }
         public override void KeyAction(ConsoleKeyInfo keyInfo)
         {
@@ -99,12 +106,34 @@ namespace Reversi
                             _reversiOperator.Put(current.state, current.player.Cursor.x, current.player.Cursor.y);
 
                             _current = current.player == _self ? _rival : _self;
+                            if (_reversiOperator.CheckPut(Current.state) == false)
+                            {
+                                _current = current.player == _self ? _rival : _self;
+                                if (_reversiOperator.CheckPut(Current.state) == false)
+                                {
+                                    var blackCount = _reversiOperator.GetPieceCount(State.Black);
+                                    var whiteCount = _reversiOperator.GetPieceCount(State.White);
+                                    if (blackCount < whiteCount)
+                                    {
+                                        Winner = State.White;
+                                    }
+                                    else if (whiteCount < blackCount)
+                                    {
+                                        Winner = State.Black;
+                                    }
+                                    IsEnd = true;
+                                }
+                            }
                         }
                     }
                     break;
                 case ConsoleKey.Escape:
                     NextScene = new TitleScean(_self, _rival, _reversiOperator);
                     break;
+                case ConsoleKey.S:
+                    _current = Current.player == _self ? _rival : _self;
+                    break;
+
             }
         }
     }

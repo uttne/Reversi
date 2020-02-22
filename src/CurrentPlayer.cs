@@ -7,17 +7,24 @@ namespace Reversi
     {
         (int x, int y) Cursor { get; }
         (int x, int y) MoveCursor(int x, int y);
+        (int x, int y) Initialize();
     }
 
     public class CurrentPlayer : IPlayer
     {
-        public CurrentPlayer(Board board){
-            _soardSize = (board.Width,board.Height);
+        public CurrentPlayer(Board board)
+        {
+            _soardSize = (board.Width, board.Height);
         }
 
         private readonly (int width, int height) _soardSize;
 
         public (int x, int y) Cursor { get; private set; }
+
+        public (int x, int y) Initialize()
+        {
+            return Cursor = (0, 0);
+        }
 
         public (int x, int y) MoveCursor(int x, int y)
         {

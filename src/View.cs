@@ -211,7 +211,17 @@ namespace Reversi
 
         private void UpdateInner(Screen screen, TitleScean scean)
         {
-            screen.Write($"title {scean.SelectNo}");
+            if (scean.SelectNo == 0)
+            {
+                screen.WriteLine($"> Game start", ConsoleColor.Green, Console.BackgroundColor);
+                screen.WriteLine($"  Exit");
+            }
+            else
+            {
+                screen.WriteLine($"  Game start");
+                screen.WriteLine($"> Exit", ConsoleColor.Green, Console.BackgroundColor);
+            }
+            screen.WriteLine("Select and push space");
         }
         private void UpdateInner(Screen screen, Board board, BattleScean scean)
         {
@@ -245,6 +255,25 @@ namespace Reversi
                     screen.Write("-+");
                 }
             }
+
+            screen.WriteLine();
+            screen.WriteLine("space : put , s : skip , esc : exit");
+            if (scean.IsEnd == false)
+            {
+                screen.WriteLine($"Turn : {(scean.Current.state == State.Black ? "Black" : "White")}");
+            }
+            else
+            {
+                if (scean.Winner.HasValue)
+                {
+                    screen.WriteLine($"Winner {(scean.Winner == State.Black ? "Black" : "White")} !", ConsoleColor.Green, Console.BackgroundColor);
+                }
+                else
+                {
+                    screen.WriteLine($"Draw", ConsoleColor.Green, Console.BackgroundColor);
+                }
+            }
+
         }
     }
 }

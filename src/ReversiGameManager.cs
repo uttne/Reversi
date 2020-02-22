@@ -19,7 +19,8 @@ namespace Reversi
         private readonly IPlayer _rival;
         private readonly ReversiOperator _reversiOperator;
 
-        public TitleScean(IPlayer self, IPlayer rival, ReversiOperator reversiOperator){
+        public TitleScean(IPlayer self, IPlayer rival, ReversiOperator reversiOperator)
+        {
             this._self = self;
             this._rival = rival;
             this._reversiOperator = reversiOperator;
@@ -44,7 +45,7 @@ namespace Reversi
                     switch (SelectNo)
                     {
                         case 0:
-                            NextScene = new BattleScean(_self,_rival,_reversiOperator);
+                            NextScene = new BattleScean(_self, _rival, _reversiOperator);
                             break;
                         case 1:
                             NextScene = null;
@@ -93,13 +94,16 @@ namespace Reversi
                 case ConsoleKey.Spacebar:
                     {
                         var current = Current;
-                        _reversiOperator.Put(current.state, current.player.Cursor.x, current.player.Cursor.y);
+                        if (_reversiOperator.CheckPut(current.state, current.player.Cursor.x, current.player.Cursor.y))
+                        {
+                            _reversiOperator.Put(current.state, current.player.Cursor.x, current.player.Cursor.y);
 
-                        _current = current.player == _self ? _rival : _self;
+                            _current = current.player == _self ? _rival : _self;
+                        }
                     }
                     break;
                 case ConsoleKey.Escape:
-                    NextScene = new TitleScean(_self,_rival,_reversiOperator);
+                    NextScene = new TitleScean(_self, _rival, _reversiOperator);
                     break;
             }
         }
@@ -108,16 +112,16 @@ namespace Reversi
     public class ReversiGameManager : IDisposable
     {
         private InputManager _inputManager;
-        private GameSceneBase _scean ;
+        private GameSceneBase _scean;
         public GameSceneBase Scean => _scean;
 
         private readonly object _sync = new object();
 
-        public ReversiGameManager(InputManager inputManager,IPlayer self, IPlayer rival, ReversiOperator reversiOperator)
+        public ReversiGameManager(InputManager inputManager, IPlayer self, IPlayer rival, ReversiOperator reversiOperator)
         {
             this._inputManager = inputManager;
             inputManager.KeyInput += KeyInputHandler;
-            _scean = new TitleScean(self,rival,reversiOperator);
+            _scean = new TitleScean(self, rival, reversiOperator);
         }
 
         private void KeyInputHandler(InputManager sender, KeyInputEventArgs e)

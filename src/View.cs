@@ -27,7 +27,7 @@ namespace Reversi
         public void Write(char value, ConsoleColor fore, ConsoleColor back)
         {
 
-            Write(value.ToString(),fore,back);
+            Write(value.ToString(), fore, back);
         }
         public void Write(string value, ConsoleColor fore, ConsoleColor back)
         {

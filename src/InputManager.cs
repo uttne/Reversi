@@ -12,10 +12,11 @@ namespace Reversi
         }
     }
     public delegate void KeyInputEventHandler(InputManager sender, KeyInputEventArgs e);
-    public class InputManager
+    public class InputManager:IDisposable
     {
         public event KeyInputEventHandler KeyInput;
         private readonly Thread _thread;
+        private bool _stop;
         public InputManager()
         {
             _thread = new Thread(ThreadFunc);
@@ -23,28 +24,27 @@ namespace Reversi
 
         private void ThreadFunc()
         {
-            while (true)
+            while (_stop == false)
             {
                 var keyInfo = Console.ReadKey(true);
                 var key = keyInfo.Key;
 
                 KeyInput?.Invoke(this, new KeyInputEventArgs(keyInfo));
-                if (keyInfo.Key == ConsoleKey.Escape)
+                if (keyInfo.Key == ConsoleKey.Escape && _stop)
                     break;
 
                 Thread.Sleep(100);
             }
         }
 
-        public void Dispose()
-        {
-            if (_thread.IsAlive)
-                _thread.Abort();
-        }
-
         public void Start()
         {
             _thread.Start();
+        }
+
+        public void Dispose()
+        {
+            _stop = true;
         }
     }
 }

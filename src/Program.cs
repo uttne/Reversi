@@ -18,7 +18,9 @@ namespace Reversi
             
             var inputManager = new InputManager();
             var gameManager = new ReversiGameManager(inputManager,selfPlayer,rivalPlayer,reversiOperator);
-            var view = new View(board,gameManager);
+            var screenManager = new ScreenManager();
+            var view = new View(screenManager);
+            var drawer = new Drawer(screenManager, board, gameManager);
 
             reversiOperator.Initialize();
             
@@ -27,6 +29,7 @@ namespace Reversi
             inputManager.Start();
 
             while(gameManager.Update()){
+                drawer.Update();
                 view.Update();
 
                 Thread.Sleep(50);
